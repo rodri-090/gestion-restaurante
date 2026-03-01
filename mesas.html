@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mesas | Gestión Restaurante</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+  <div class="dash">
+    <header class="dash-top">
+      <div class="dash-title">
+        <h1>Gestión de mesas</h1>
+        <p>Crear, editar y eliminar mesas (solo visual)</p>
+      </div>
+
+      <div class="dash-actions">
+        <a class="dash-btn" href="dashboard.html" style="text-decoration:none;">
+          <i class="bi bi-arrow-left"></i>
+          Volver
+        </a>
+
+       <button class="dash-btn" type="button" data-open="modalMesa">
+    <i class="bi bi-plus-circle"></i>
+     Agregar mesa
+    </button>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Listado de mesas</h2>
+        <span class="pill"><i class="bi bi-grid-3x3-gap"></i> Total: 8</span>
+      </div>
+
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Mesa</th>
+              <th>Capacidad</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Mesa 1</td>
+              <td>4</td>
+              <td><span class="status s-free"><i class="bi bi-check-circle"></i> Libre</span></td>
+              <td class="actions">
+                <button class="icon-action" type="button" title="Editar" data-open="modalMesa" data-title="Editar mesa">
+  <i class="bi bi-pencil-square"></i>
+</button>
+                <button class="icon-action danger" type="button" title="Eliminar" data-delete="true">
+  <i class="bi bi-trash3"></i>
+</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Mesa 2</td>
+              <td>2</td>
+              <td><span class="status s-res"><i class="bi bi-bookmark-check"></i> Reservada</span></td>
+              <td class="actions">
+                <button class="icon-action" type="button" title="Editar" data-open="modalMesa" data-title="Editar mesa">
+  <i class="bi bi-pencil-square"></i>
+</button>
+                <button class="icon-action danger" type="button" title="Eliminar" data-delete="true">
+  <i class="bi bi-trash3"></i>
+</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Mesa 3</td>
+              <td>6</td>
+              <td><span class="status s-occ"><i class="bi bi-people-fill"></i> Ocupada</span></td>
+              <td class="actions">
+                <button class="icon-action" type="button" title="Editar" data-open="modalMesa" data-title="Editar mesa">
+  <i class="bi bi-pencil-square"></i>
+</button>
+                <button class="icon-action danger" type="button" title="Eliminar" data-delete="true">
+  <i class="bi bi-trash3"></i>
+</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Mesa 4</td>
+              <td>4</td>
+              <td><span class="status s-free"><i class="bi bi-check-circle"></i> Libre</span></td>
+              <td class="actions">
+                <button class="icon-action" type="button" title="Editar" data-open="modalMesa" data-title="Editar mesa">
+  <i class="bi bi-pencil-square"></i>
+</button>
+                <button class="icon-action danger" type="button" title="Eliminar" data-delete="true">
+  <i class="bi bi-trash3"></i>
+</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Mesa 5</td>
+              <td>8</td>
+              <td><span class="status s-res"><i class="bi bi-bookmark-check"></i> Reservada</span></td>
+              <td class="actions">
+                <button class="icon-action" type="button" title="Editar" data-open="modalMesa" data-title="Editar mesa">
+  <i class="bi bi-pencil-square"></i>
+</button>
+                <button class="icon-action danger" type="button" title="Eliminar" data-delete="true">
+  <i class="bi bi-trash3"></i>
+</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Mesa 6</td>
+              <td>2</td>
+              <td><span class="status s-occ"><i class="bi bi-people-fill"></i> Ocupada</span></td>
+              <td class="actions">
+                <button class="icon-action" type="button" title="Editar" data-open="modalMesa" data-title="Editar mesa">
+  <i class="bi bi-pencil-square"></i>
+</button>
+                <button class="icon-action danger" type="button" title="Eliminar" data-delete="true">
+  <i class="bi bi-trash3"></i>
+</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Mesa 7</td>
+              <td>4</td>
+              <td><span class="status s-free"><i class="bi bi-check-circle"></i> Libre</span></td>
+              <td class="actions">
+                <button class="icon-action" type="button" title="Editar" data-open="modalMesa" data-title="Editar mesa">
+  <i class="bi bi-pencil-square"></i>
+</button>
+                <button class="icon-action danger" type="button" title="Eliminar" data-delete="true">
+  <i class="bi bi-trash3"></i>
+</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Mesa 8</td>
+              <td>6</td>
+              <td><span class="status s-res"><i class="bi bi-bookmark-check"></i> Reservada</span></td>
+              <td class="actions">
+                <button class="icon-action" type="button" title="Editar" data-open="modalMesa" data-title="Editar mesa">
+  <i class="bi bi-pencil-square"></i>
+</button>
+                <button class="icon-action danger" type="button" title="Eliminar" data-delete="true">
+  <i class="bi bi-trash3"></i>
+</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+ <div class="modal" id="modalMesa" aria-hidden="true">
+      <div class="modal-backdrop" data-close="modalMesa"></div>
+
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalMesaTitle">
+        <div class="modal-head">
+          <h3 id="modalMesaTitle">Agregar mesa</h3>
+          <button class="modal-x" type="button" data-close="modalMesa" aria-label="Cerrar">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+
+        <form class="modal-form" action="#" method="post">
+          <label class="field">
+            <span class="label">Nombre de mesa</span>
+            <div class="input-wrap">
+              <i class="bi bi-grid-3x3-gap input-icon"></i>
+              <input class="input input-pad" type="text" placeholder="Ej: Mesa 9" required>
+            </div>
+          </label>
+
+          <label class="field">
+            <span class="label">Capacidad</span>
+            <div class="input-wrap">
+              <i class="bi bi-people input-icon"></i>
+              <input class="input input-pad" type="number" min="1" placeholder="Ej: 4" required>
+            </div>
+          </label>
+
+          <label class="field">
+            <span class="label">Estado</span>
+            <div class="select-wrap">
+              <i class="bi bi-flag input-icon"></i>
+              <select class="input input-pad" required>
+                <option value="free">Libre</option>
+                <option value="occ">Ocupada</option>
+                <option value="res">Reservada</option>
+              </select>
+            </div>
+          </label>
+
+          <div class="modal-actions">
+            <button class="btn btn-outline" type="button" data-close="modalMesa">Cancelar</button>
+            <button class="btn" type="submit">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

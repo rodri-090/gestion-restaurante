@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recuperar acceso</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+  <main class="page">
+    <section class="card">
+      <div class="brand">
+        <p class="subtitle">Recuperar acceso</p>
+      </div>
+
+      <form class="form" action="linkenviado.html" method="get">
+        <label class="field">
+          <span class="label">¿Qué olvidaste?</span>
+          <div class="select-wrap">
+            <i class="bi bi-question-circle input-icon"></i>
+            <select class="input input-pad" name="tipo" id="tipoRecuperacion" required>
+              <option value="" selected disabled>Selecciona una opción</option>
+              <option value="password">Olvidé mi contraseña</option>
+              <option value="user">Olvidé mi usuario</option>
+            </select>
+          </div>
+        </label>
+
+        <label class="field">
+          <span class="label" id="labelIdentificador">Usuario o correo</span>
+          <div class="input-wrap">
+            <i class="bi bi-person input-icon"></i>
+            <input class="input input-pad" type="text" name="usuario" id="inputIdentificador" placeholder="Ingresa tu usuario o correo" required>
+          </div>
+        </label>
+
+        <button class="btn" type="submit">Continuar</button>
+
+        <a class="btn btn-outline" href="index.html" style="text-align:center; display:block; text-decoration:none; padding:12px 14px;">
+          Volver al login
+        </a>
+      </form>
+    </section>
+  </main>
+  <script src="js/app.js"></script>
+</body>
+</html>
