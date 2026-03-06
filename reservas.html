@@ -12,7 +12,7 @@
     <header class="dash-top">
       <div class="dash-title">
         <h1>Reservaciones</h1>
-        <p>Crear reservas por fecha y hora (solo visual)</p>
+        <p>Crear y gestionar reservas por fecha y hora</p>
       </div>
 
       <div class="dash-actions">
@@ -21,7 +21,7 @@
           Volver
         </a>
 
-        <button class="dash-btn" type="button" data-open="modalReserva">
+        <button class="dash-btn" type="button" id="btnNuevaReserva">
           <i class="bi bi-calendar2-plus"></i>
           Nueva reserva
         </button>
@@ -31,7 +31,7 @@
     <section class="dash-panels">
       <article class="panel">
         <div class="panel-head">
-          <h2>Calendario</h2>
+          <h2>Crear reserva</h2>
           <span class="pill"><i class="bi bi-calendar3"></i> Selección</span>
         </div>
 
@@ -40,7 +40,7 @@
             <span class="label">Fecha</span>
             <div class="input-wrap">
               <i class="bi bi-calendar-event input-icon"></i>
-              <input class="input input-pad" type="date" required>
+              <input class="input input-pad" type="date" id="fechaReserva" required>
             </div>
           </label>
 
@@ -48,7 +48,8 @@
             <span class="label">Hora</span>
             <div class="select-wrap">
               <i class="bi bi-clock input-icon"></i>
-              <select class="input input-pad" required>
+              <select class="input input-pad" id="horaReserva" required>
+                <option value="">Seleccionar hora</option>
                 <option>12:00 p.m.</option>
                 <option>12:30 p.m.</option>
                 <option>1:00 p.m.</option>
@@ -66,21 +67,18 @@
             <span class="label">Mesa</span>
             <div class="select-wrap">
               <i class="bi bi-grid-3x3-gap input-icon"></i>
-              <select class="input input-pad" required>
-                <option>Mesa 1 (4)</option>
-                <option>Mesa 2 (2)</option>
-                <option>Mesa 3 (6)</option>
-                <option>Mesa 4 (4)</option>
-                <option>Mesa 5 (8)</option>
+              <select class="input input-pad" id="mesaReserva" required>
+                <option value="">Cargando mesas...</option>
               </select>
             </div>
+            <small id="mesaInfo" style="color:#888; margin-top:4px; display:block;"></small>
           </label>
 
           <label class="field">
             <span class="label">Nombre del cliente</span>
             <div class="input-wrap">
               <i class="bi bi-person input-icon"></i>
-              <input class="input input-pad" type="text" placeholder="Ej: Carlos Pérez" required>
+              <input class="input input-pad" type="text" id="clienteReserva" placeholder="Ej: Carlos Pérez" required>
             </div>
           </label>
 
@@ -88,12 +86,12 @@
             <span class="label">Teléfono</span>
             <div class="input-wrap">
               <i class="bi bi-telephone input-icon"></i>
-              <input class="input input-pad" type="tel" placeholder="Ej: 7777-7777" required>
+              <input class="input input-pad" type="tel" id="telefonoReserva" placeholder="Ej: 7777-7777" required>
             </div>
           </label>
 
-          <button class="btn" type="button" data-open="modalReserva" data-title="Nueva reserva">
-            <i class="bi bi-check2-circle"></i> Confirmar (visual)
+          <button class="btn" type="button" id="btnConfirmarReserva">
+            <i class="bi bi-check2-circle"></i> Confirmar reserva
           </button>
         </div>
       </article>
@@ -101,33 +99,29 @@
       <article class="panel">
         <div class="panel-head">
           <h2>Reservas del día</h2>
-          <span class="pill"><i class="bi bi-list-check"></i> Lista</span>
+          <span class="pill" id="totalReservas"><i class="bi bi-list-check"></i> Total: 0</span>
         </div>
 
-        <ul class="activity">
-          <li><i class="bi bi-calendar-check"></i> Mesa 2 — 12:30 p.m. — Ana López</li>
-          <li><i class="bi bi-calendar-check"></i> Mesa 5 — 6:00 p.m. — José Martínez</li>
-          <li><i class="bi bi-calendar-check"></i> Mesa 1 — 7:30 p.m. — Carlos Pérez</li>
-          <li><i class="bi bi-calendar-check"></i> Mesa 3 — 8:00 p.m. — María Gómez</li>
+        <ul class="activity" id="listaReservas">
         </ul>
 
         <div class="chart-placeholder" style="margin-top:14px;">
           <div class="chart-head">
-            <h3>Ocupación (visual)</h3>
-            <span class="muted">No funcional</span>
+            <h3>Ocupación</h3>
+            <span class="muted" id="fechaActual"></span>
           </div>
           <div class="chart-box"></div>
         </div>
       </article>
     </section>
 
-    <div class="modal" id="modalReserva" aria-hidden="true">
-      <div class="modal-backdrop" data-close="modalReserva"></div>
-
-      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalReservaTitle">
+    <!-- Modal de confirmación -->
+    <div class="modal" id="modalReserva" style="display:none;">
+      <div class="modal-backdrop" id="modalBackdrop"></div>
+      <div class="modal-card">
         <div class="modal-head">
           <h3 id="modalReservaTitle">Reserva creada</h3>
-          <button class="modal-x" type="button" data-close="modalReserva" aria-label="Cerrar">
+          <button class="modal-x" type="button" id="modalClose" aria-label="Cerrar">
             <i class="bi bi-x-lg"></i>
           </button>
         </div>
@@ -137,13 +131,13 @@
             <i class="bi bi-calendar2-check"></i>
           </div>
           <div class="notice-text">
-            <p class="notice-title">Listo</p>
-            <p class="notice-desc">La reservación se registró correctamente (solo visual).</p>
+            <p class="notice-title" id="modalMensaje">Listo</p>
+            <p class="notice-desc" id="modalDetalle"></p>
           </div>
         </div>
 
         <div class="modal-actions" style="margin-top:12px;">
-          <button class="btn" type="button" data-close="modalReserva">Aceptar</button>
+          <button class="btn" type="button" id="modalAceptar">Aceptar</button>
           <a class="btn btn-outline" href="dashboard.html" style="text-align:center; display:block; text-decoration:none;">
             Ir al dashboard
           </a>
@@ -152,6 +146,230 @@
     </div>
   </div>
 
-  <script src="js/app.js"></script>
+  <script>
+    // 🔗 URL del backend
+    const API_URL = 'http://localhost:3000/api';
+
+    // 📅 Obtener fecha actual en formato YYYY-MM-DD
+    function getFechaHoy() {
+      const hoy = new Date();
+      return hoy.toISOString().split('T')[0];
+    }
+
+    // 🪑 Cargar mesas desde la API
+    async function cargarMesas() {
+      const select = document.getElementById('mesaReserva');
+      const info = document.getElementById('mesaInfo');
+      
+      if (!select) return;
+      
+      select.innerHTML = '<option value="">Cargando...</option>';
+      
+      try {
+        const response = await fetch(`${API_URL}/mesas`);
+        const mesas = await response.json();
+        
+        select.innerHTML = '<option value="">Seleccionar mesa</option>';
+        
+        let disponibles = 0;
+        let noDisponibles = 0;
+        
+        mesas.forEach(mesa => {
+          const option = document.createElement('option');
+          option.value = mesa.id_mesa;
+          option.dataset.estado = mesa.estado_mesa;
+          option.textContent = `${mesa.nombre_mesa} (${mesa.capacidad} personas)`;
+          
+          if (mesa.estado_mesa === 'OCUPADA') {
+            option.disabled = true;
+            option.textContent += ' - OCUPADA';
+            noDisponibles++;
+          } else {
+            disponibles++;
+          }
+          
+          select.appendChild(option);
+        });
+        
+        if (info) {
+          info.textContent = `🟢 ${disponibles} disponibles | 🔴 ${noDisponibles} ocupadas`;
+        }
+      } catch (error) {
+        console.error('Error cargando mesas:', error);
+        select.innerHTML = '<option value="">Error al cargar</option>';
+      }
+    }
+
+    // 🎨 Renderizar reservas desde la API
+    async function renderReservas() {
+      const lista = document.getElementById('listaReservas');
+      const totalSpan = document.getElementById('totalReservas');
+      const fechaHoy = getFechaHoy();
+      
+      if (!lista) return;
+      
+      lista.innerHTML = '<li><i class="bi bi-hourglass-split"></i> Cargando reservas...</li>';
+      
+      try {
+        const response = await fetch(`${API_URL}/reservas`);
+        const reservas = await response.json();
+        
+        // Filtrar reservas de hoy
+        const reservasHoy = reservas.filter(r => r.fecha_reserva === fechaHoy);
+        
+        lista.innerHTML = '';
+        
+        if (reservasHoy.length === 0) {
+          lista.innerHTML = '<li style="color:#888;"><i class="bi bi-info-circle"></i> No hay reservas para hoy</li>';
+        } else {
+          reservasHoy.forEach(reserva => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+              <i class="bi bi-calendar-check"></i> 
+              <strong>${reserva.nombre_mesa}</strong> — ${reserva.hora_reserva} — ${reserva.nombre_cliente}
+              <button class="icon-action danger" type="button" title="Cancelar reserva" onclick="cancelarReserva(${reserva.id_reserva})" style="margin-left:8px; padding:2px 6px; font-size:14px;">
+                <i class="bi bi-trash3"></i>
+              </button>
+            `;
+            lista.appendChild(li);
+          });
+        }
+        
+        if (totalSpan) {
+          totalSpan.innerHTML = `<i class="bi bi-list-check"></i> Total: ${reservasHoy.length}`;
+        }
+      } catch (error) {
+        console.error('Error cargando reservas:', error);
+        lista.innerHTML = '<li style="color:red;"><i class="bi bi-exclamation-triangle"></i> Error al cargar reservas</li>';
+      }
+    }
+
+    // ➕ Crear nueva reserva (envía a la API)
+    async function crearReserva() {
+      const fecha = document.getElementById('fechaReserva').value;
+      const hora = document.getElementById('horaReserva').value;
+      const idMesa = document.getElementById('mesaReserva').value;
+      const mesaText = document.getElementById('mesaReserva').options[document.getElementById('mesaReserva').selectedIndex].text;
+      const cliente = document.getElementById('clienteReserva').value.trim();
+      const telefono = document.getElementById('telefonoReserva').value.trim();
+      
+      if (!fecha || !hora || !idMesa || !cliente || !telefono) {
+        alert('⚠️ Completa todos los campos');
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_URL}/reservas`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id_mesa: parseInt(idMesa),
+            fecha_reserva: fecha,
+            hora_reserva: hora,
+            nombre_cliente: cliente,
+            telefono_cliente: telefono,
+            estado_reserva: 'ACTIVA'
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          mostrarModal('✅ Reserva creada', 
+            `<strong>${cliente}</strong><br>📅 ${fecha} — 🕐 ${hora}<br>🪑 ${mesaText}<br>📞 ${telefono}`);
+          
+          // Limpiar formulario
+          document.getElementById('fechaReserva').value = '';
+          document.getElementById('horaReserva').value = '';
+          document.getElementById('mesaReserva').value = '';
+          document.getElementById('clienteReserva').value = '';
+          document.getElementById('telefonoReserva').value = '';
+          
+          // Recargar datos
+          await cargarMesas();
+          await renderReservas();
+        } else {
+          alert('⚠️ ' + (data.mensaje || 'Error al crear reserva'));
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Error de conexión con el servidor');
+      }
+    }
+
+    // ❌ Cancelar reserva (envía a la API)
+    async function cancelarReserva(id) {
+      if (confirm('¿Estás seguro de cancelar esta reserva?')) {
+        try {
+          const response = await fetch(`${API_URL}/reservas/${id}`, {
+            method: 'DELETE'
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            await renderReservas();
+            await cargarMesas();
+            alert('✅ Reserva cancelada');
+          } else {
+            alert('❌ Error al cancelar');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('❌ Error de conexión con el servidor');
+        }
+      }
+    }
+
+    // 🪟 Mostrar modal
+    function mostrarModal(titulo, detalle) {
+      document.getElementById('modalReservaTitle').textContent = titulo;
+      document.getElementById('modalMensaje').textContent = titulo.includes('✅') ? 'Listo' : 'Atención';
+      document.getElementById('modalDetalle').innerHTML = detalle;
+      document.getElementById('modalReserva').style.display = 'block';
+    }
+
+    // 🚪 Cerrar modal
+    function cerrarModal() {
+      document.getElementById('modalReserva').style.display = 'none';
+    }
+
+    // 🚀 Inicializar
+    document.addEventListener('DOMContentLoaded', async function() {
+      // Establecer fecha mínima = hoy
+      const fechaInput = document.getElementById('fechaReserva');
+      if (fechaInput) {
+        fechaInput.min = getFechaHoy();
+        fechaInput.value = getFechaHoy();
+      }
+      
+      // Mostrar fecha actual
+      const fechaActual = document.getElementById('fechaActual');
+      if (fechaActual) {
+        const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        fechaActual.textContent = new Date().toLocaleDateString('es-ES', opciones);
+      }
+      
+      // Cargar datos iniciales
+      await cargarMesas();
+      await renderReservas();
+      
+      // Eventos de botones
+      document.getElementById('btnNuevaReserva')?.addEventListener('click', function() {
+        document.querySelector('.res-form')?.scrollIntoView({ behavior: 'smooth' });
+      });
+      
+      document.getElementById('btnConfirmarReserva')?.addEventListener('click', crearReserva);
+      
+      document.getElementById('modalClose')?.addEventListener('click', cerrarModal);
+      document.getElementById('modalBackdrop')?.addEventListener('click', cerrarModal);
+      document.getElementById('modalAceptar')?.addEventListener('click', cerrarModal);
+      
+      // Cerrar modal con tecla Escape
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') cerrarModal();
+      });
+    });
+  </script>
 </body>
 </html>
