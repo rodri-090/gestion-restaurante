@@ -12,7 +12,7 @@
     <header class="dash-top">
       <div class="dash-title">
         <h1>Gestión de mesas</h1>
-        <p>Crear, editar y eliminar mesas (solo visual)</p>
+        <p>Crear, editar y eliminar mesas</p>
       </div>
 
       <div class="dash-actions">
@@ -21,17 +21,17 @@
           Volver
         </a>
 
-       <button class="dash-btn" type="button" data-open="modalMesa">
-    <i class="bi bi-plus-circle"></i>
-     Agregar mesa
-    </button>
+        <button class="dash-btn" type="button" onclick="openModal()">
+          <i class="bi bi-plus-circle"></i>
+          Agregar mesa
+        </button>
       </div>
     </header>
 
     <section class="panel">
       <div class="panel-head">
         <h2>Listado de mesas</h2>
-        <span class="pill"><i class="bi bi-grid-3x3-gap"></i> Total: 8</span>
+        <span class="pill" id="totalMesas"><i class="bi bi-grid-3x3-gap"></i> Total: 0</span>
       </div>
 
       <div class="table-wrap">
@@ -40,169 +40,81 @@
             <tr>
               <th>Mesa</th>
               <th>Capacidad</th>
+              <th>Fecha y Hora</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
 
-          <tbody>
-            <tr>
-              <td>Mesa 1</td>
-              <td>4</td>
-              <td><span class="status s-free"><i class="bi bi-check-circle"></i> Libre</span></td>
-              <td class="actions">
-                <button class="icon-action" type="button" title="Editar" data-open="modalMesa" data-title="Editar mesa">
-  <i class="bi bi-pencil-square"></i>
-</button>
-                <button class="icon-action danger" type="button" title="Eliminar" data-delete="true">
-  <i class="bi bi-trash3"></i>
-</button>
-              </td>
-            </tr>
-
-            <tr>
-              <td>Mesa 2</td>
-              <td>2</td>
-              <td><span class="status s-res"><i class="bi bi-bookmark-check"></i> Reservada</span></td>
-              <td class="actions">
-                <button class="icon-action" type="button" title="Editar" data-open="modalMesa" data-title="Editar mesa">
-  <i class="bi bi-pencil-square"></i>
-</button>
-                <button class="icon-action danger" type="button" title="Eliminar" data-delete="true">
-  <i class="bi bi-trash3"></i>
-</button>
-              </td>
-            </tr>
-
-            <tr>
-              <td>Mesa 3</td>
-              <td>6</td>
-              <td><span class="status s-occ"><i class="bi bi-people-fill"></i> Ocupada</span></td>
-              <td class="actions">
-                <button class="icon-action" type="button" title="Editar" data-open="modalMesa" data-title="Editar mesa">
-  <i class="bi bi-pencil-square"></i>
-</button>
-                <button class="icon-action danger" type="button" title="Eliminar" data-delete="true">
-  <i class="bi bi-trash3"></i>
-</button>
-              </td>
-            </tr>
-
-            <tr>
-              <td>Mesa 4</td>
-              <td>4</td>
-              <td><span class="status s-free"><i class="bi bi-check-circle"></i> Libre</span></td>
-              <td class="actions">
-                <button class="icon-action" type="button" title="Editar" data-open="modalMesa" data-title="Editar mesa">
-  <i class="bi bi-pencil-square"></i>
-</button>
-                <button class="icon-action danger" type="button" title="Eliminar" data-delete="true">
-  <i class="bi bi-trash3"></i>
-</button>
-              </td>
-            </tr>
-
-            <tr>
-              <td>Mesa 5</td>
-              <td>8</td>
-              <td><span class="status s-res"><i class="bi bi-bookmark-check"></i> Reservada</span></td>
-              <td class="actions">
-                <button class="icon-action" type="button" title="Editar" data-open="modalMesa" data-title="Editar mesa">
-  <i class="bi bi-pencil-square"></i>
-</button>
-                <button class="icon-action danger" type="button" title="Eliminar" data-delete="true">
-  <i class="bi bi-trash3"></i>
-</button>
-              </td>
-            </tr>
-
-            <tr>
-              <td>Mesa 6</td>
-              <td>2</td>
-              <td><span class="status s-occ"><i class="bi bi-people-fill"></i> Ocupada</span></td>
-              <td class="actions">
-                <button class="icon-action" type="button" title="Editar" data-open="modalMesa" data-title="Editar mesa">
-  <i class="bi bi-pencil-square"></i>
-</button>
-                <button class="icon-action danger" type="button" title="Eliminar" data-delete="true">
-  <i class="bi bi-trash3"></i>
-</button>
-              </td>
-            </tr>
-
-            <tr>
-              <td>Mesa 7</td>
-              <td>4</td>
-              <td><span class="status s-free"><i class="bi bi-check-circle"></i> Libre</span></td>
-              <td class="actions">
-                <button class="icon-action" type="button" title="Editar" data-open="modalMesa" data-title="Editar mesa">
-  <i class="bi bi-pencil-square"></i>
-</button>
-                <button class="icon-action danger" type="button" title="Eliminar" data-delete="true">
-  <i class="bi bi-trash3"></i>
-</button>
-              </td>
-            </tr>
-
-            <tr>
-              <td>Mesa 8</td>
-              <td>6</td>
-              <td><span class="status s-res"><i class="bi bi-bookmark-check"></i> Reservada</span></td>
-              <td class="actions">
-                <button class="icon-action" type="button" title="Editar" data-open="modalMesa" data-title="Editar mesa">
-  <i class="bi bi-pencil-square"></i>
-</button>
-                <button class="icon-action danger" type="button" title="Eliminar" data-delete="true">
-  <i class="bi bi-trash3"></i>
-</button>
-              </td>
-            </tr>
+          <tbody id="tablaMesas">
           </tbody>
         </table>
       </div>
     </section>
- <div class="modal" id="modalMesa" aria-hidden="true">
-      <div class="modal-backdrop" data-close="modalMesa"></div>
 
-      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalMesaTitle">
+    <!-- Modal -->
+    <div class="modal" id="modalMesa" style="display:none;">
+      <div class="modal-backdrop" onclick="closeModal()"></div>
+      <div class="modal-card">
         <div class="modal-head">
-          <h3 id="modalMesaTitle">Agregar mesa</h3>
-          <button class="modal-x" type="button" data-close="modalMesa" aria-label="Cerrar">
+          <h3 id="modalTitle">Agregar mesa</h3>
+          <button class="modal-x" type="button" onclick="closeModal()">
             <i class="bi bi-x-lg"></i>
           </button>
         </div>
 
-        <form class="modal-form" action="#" method="post">
+        <form id="formMesa">
+          <input type="hidden" id="editId" value="">
+          
           <label class="field">
             <span class="label">Nombre de mesa</span>
-            <div class="input-wrap">
-              <i class="bi bi-grid-3x3-gap input-icon"></i>
-              <input class="input input-pad" type="text" placeholder="Ej: Mesa 9" required>
-            </div>
+            <input class="input input-pad" type="text" id="nombreMesa" placeholder="Ej: Mesa 9" required>
+          </label>
+
+          <label class="field">
+            <span class="label">Número de mesas</span>
+            <input class="input input-pad" type="number" id="numeroMesas" min="1" placeholder="Ej: 2" value="1" required>
+            <small style="color:#888; margin-top:4px; display:block;">Cantidad de mesas iguales a agregar</small>
           </label>
 
           <label class="field">
             <span class="label">Capacidad</span>
-            <div class="input-wrap">
-              <i class="bi bi-people input-icon"></i>
-              <input class="input input-pad" type="number" min="1" placeholder="Ej: 4" required>
-            </div>
+            <input class="input input-pad" type="number" id="capacidadMesa" min="1" placeholder="Ej: 4" required>
+            <small style="color:#888; margin-top:4px; display:block;">Personas por mesa</small>
+          </label>
+
+          <label class="field">
+            <span class="label">Fecha de disponibilidad</span>
+            <input class="input input-pad" type="date" id="fechaMesa" required>
+          </label>
+
+          <label class="field">
+            <span class="label">Hora de disponibilidad</span>
+            <select class="input input-pad" id="horaMesa" required>
+              <option value="">Seleccionar hora</option>
+              <option>12:00 p.m.</option>
+              <option>12:30 p.m.</option>
+              <option>1:00 p.m.</option>
+              <option>1:30 p.m.</option>
+              <option>6:00 p.m.</option>
+              <option>6:30 p.m.</option>
+              <option>7:00 p.m.</option>
+              <option>7:30 p.m.</option>
+              <option>8:00 p.m.</option>
+            </select>
           </label>
 
           <label class="field">
             <span class="label">Estado</span>
-            <div class="select-wrap">
-              <i class="bi bi-flag input-icon"></i>
-              <select class="input input-pad" required>
-                <option value="free">Libre</option>
-                <option value="occ">Ocupada</option>
-                <option value="res">Reservada</option>
-              </select>
-            </div>
+            <select class="input input-pad" id="estadoMesa" required>
+              <option value="free">Libre</option>
+              <option value="res">Reservada</option>
+              <option value="occ">Ocupada</option>
+            </select>
           </label>
 
           <div class="modal-actions">
-            <button class="btn btn-outline" type="button" data-close="modalMesa">Cancelar</button>
+            <button class="btn btn-outline" type="button" onclick="closeModal()">Cancelar</button>
             <button class="btn" type="submit">Guardar</button>
           </div>
         </form>
@@ -210,6 +122,245 @@
     </div>
   </div>
 
-  <script src="js/app.js"></script>
+  <script>
+    const STORAGE_KEY = 'mesas_restaurante';
+    const RESERVAS_KEY = 'reservas_restaurante';
+
+    const mesasIniciales = [
+      { id: 1, nombre: 'Mesa 1', capacidad: 4, fecha: '2026-03-06', hora: '12:00 p.m.', estado: 'free' },
+      { id: 2, nombre: 'Mesa 2', capacidad: 2, fecha: '2026-03-06', hora: '12:00 p.m.', estado: 'free' },
+      { id: 3, nombre: 'Mesa 3', capacidad: 6, fecha: '2026-03-06', hora: '12:00 p.m.', estado: 'free' },
+      { id: 4, nombre: 'Mesa 4', capacidad: 4, fecha: '2026-03-06', hora: '12:00 p.m.', estado: 'free' },
+      { id: 5, nombre: 'Mesa 5', capacidad: 8, fecha: '2026-03-06', hora: '12:00 p.m.', estado: 'free' },
+      { id: 6, nombre: 'Mesa 6', capacidad: 2, fecha: '2026-03-06', hora: '12:00 p.m.', estado: 'free' },
+      { id: 7, nombre: 'Mesa 7', capacidad: 4, fecha: '2026-03-06', hora: '12:00 p.m.', estado: 'free' },
+      { id: 8, nombre: 'Mesa 8', capacidad: 6, fecha: '2026-03-06', hora: '12:00 p.m.', estado: 'free' }
+    ];
+
+    function getMesas() {
+      const stored = sessionStorage.getItem(STORAGE_KEY);
+      if (stored) return JSON.parse(stored);
+      return mesasIniciales;
+    }
+
+    function saveMesas(mesas) {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(mesas));
+    }
+
+    function getReservas() {
+      const stored = sessionStorage.getItem(RESERVAS_KEY);
+      if (stored) return JSON.parse(stored);
+      return [];
+    }
+
+    function getFechaHoy() {
+      const hoy = new Date();
+      return hoy.toISOString().split('T')[0];
+    }
+
+    function getEstadoHTML(estado) {
+      const estados = {
+        'free': '<span class="status s-free"><i class="bi bi-check-circle"></i> Libre</span>',
+        'res': '<span class="status s-res"><i class="bi bi-bookmark-check"></i> Reservada</span>',
+        'occ': '<span class="status s-occ"><i class="bi bi-people-fill"></i> Ocupada</span>'
+      };
+      return estados[estado] || estados['free'];
+    }
+
+    function renderTable() {
+      const mesas = getMesas();
+      const reservas = getReservas();
+      const fechaHoy = getFechaHoy();
+      
+      const tbody = document.getElementById('tablaMesas');
+      const totalSpan = document.getElementById('totalMesas');
+      
+      if (!tbody) return;
+      
+      tbody.innerHTML = '';
+      
+      const reservasHoy = reservas.filter(r => r.fecha === fechaHoy);
+      
+      mesas.forEach(mesa => {
+        const tieneReserva = reservasHoy.some(r => r.mesa === mesa.nombre);
+        
+        if (tieneReserva && mesa.estado !== 'occ') {
+          mesa.estado = 'res';
+        }
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${mesa.nombre}</td>
+          <td>${mesa.capacidad} personas</td>
+          <td>
+            ${mesa.fecha ? `<small style="color:#888;">📅 ${mesa.fecha}</small><br>` : ''}
+            ${mesa.hora ? `<small style="color:#888;">🕐 ${mesa.hora}</small>` : ''}
+          </td>
+          <td>${getEstadoHTML(mesa.estado)}</td>
+          <td class="actions">
+            <button class="icon-action" type="button" title="Editar" onclick="editMesa(${mesa.id})">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+            <button class="icon-action danger" type="button" title="Eliminar" onclick="deleteMesa(${mesa.id})">
+              <i class="bi bi-trash3"></i>
+            </button>
+            <button class="icon-action primary" type="button" title="Cambiar estado" onclick="toggleEstado(${mesa.id})">
+              <i class="bi bi-arrow-repeat"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+      
+      if (totalSpan) {
+        totalSpan.innerHTML = `<i class="bi bi-grid-3x3-gap"></i> Total: ${mesas.length}`;
+      }
+    }
+
+    function deleteMesa(id) {
+      if (confirm('¿Estás seguro de eliminar esta mesa?')) {
+        let mesas = getMesas();
+        mesas = mesas.filter(m => m.id !== id);
+        saveMesas(mesas);
+        renderTable();
+        alert('✅ Mesa eliminada');
+      }
+    }
+
+    function toggleEstado(id) {
+      let mesas = getMesas();
+      const mesa = mesas.find(m => m.id === id);
+      
+      if (mesa) {
+        const estados = ['free', 'res', 'occ'];
+        const actual = estados.indexOf(mesa.estado);
+        mesa.estado = estados[(actual + 1) % 3];
+        
+        saveMesas(mesas);
+        renderTable();
+        
+        const nombres = {
+          'free': 'Libre',
+          'res': 'Reservada', 
+          'occ': 'Ocupada'
+        };
+        alert('✅ Estado cambiado a: ' + nombres[mesa.estado]);
+      }
+    }
+
+    function editMesa(id) {
+      const mesas = getMesas();
+      const mesa = mesas.find(m => m.id === id);
+      
+      if (mesa) {
+        document.getElementById('editId').value = mesa.id;
+        document.getElementById('nombreMesa').value = mesa.nombre;
+        document.getElementById('numeroMesas').value = '1';
+        document.getElementById('capacidadMesa').value = mesa.capacidad;
+        document.getElementById('fechaMesa').value = mesa.fecha || '';
+        document.getElementById('horaMesa').value = mesa.hora || '';
+        document.getElementById('estadoMesa').value = mesa.estado;
+        document.getElementById('modalTitle').textContent = 'Editar mesa';
+        
+        openModal();
+      }
+    }
+
+    function openModal() {
+      const modal = document.getElementById('modalMesa');
+      if (modal) {
+        modal.style.display = 'block';
+        // Establecer fecha mínima = hoy
+        const fechaInput = document.getElementById('fechaMesa');
+        if (fechaInput) {
+          fechaInput.min = getFechaHoy();
+        }
+      }
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('modalMesa');
+      if (modal) {
+        modal.style.display = 'none';
+      }
+      document.getElementById('formMesa').reset();
+      document.getElementById('editId').value = '';
+      document.getElementById('modalTitle').textContent = 'Agregar mesa';
+    }
+
+    document.getElementById('formMesa').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const editId = document.getElementById('editId').value;
+      const nombre = document.getElementById('nombreMesa').value.trim();
+      const numeroMesas = parseInt(document.getElementById('numeroMesas').value) || 1;
+      const capacidad = parseInt(document.getElementById('capacidadMesa').value);
+      const fecha = document.getElementById('fechaMesa').value;
+      const hora = document.getElementById('horaMesa').value;
+      const estado = document.getElementById('estadoMesa').value;
+      
+      if (!nombre || !capacidad || !fecha || !hora) {
+        alert('⚠️ Completa todos los campos obligatorios');
+        return;
+      }
+      
+      let mesas = getMesas();
+      
+      if (editId) {
+        // Editar existente
+        const index = mesas.findIndex(m => m.id === parseInt(editId));
+        if (index !== -1) {
+          mesas[index] = { 
+            ...mesas[index], 
+            nombre, 
+            capacidad, 
+            fecha, 
+            hora,
+            estado 
+          };
+          alert('✅ Mesa actualizada');
+        }
+      } else {
+        // Agregar nueva(s) mesa(s)
+        let nuevoId = mesas.length > 0 ? Math.max(...mesas.map(m => m.id)) + 1 : 1;
+        
+        for (let i = 0; i < numeroMesas; i++) {
+          const nombreConNumero = numeroMesas > 1 ? `${nombre} ${i + 1}` : nombre;
+          
+          mesas.push({ 
+            id: nuevoId++, 
+            nombre: nombreConNumero, 
+            capacidad, 
+            fecha,
+            hora,
+            estado 
+          });
+        }
+        
+        alert(`✅ ${numeroMesas} mesa${numeroMesas > 1 ? 's' : ''} agregada${numeroMesas > 1 ? 's' : ''}`);
+      }
+      
+      saveMesas(mesas);
+      renderTable();
+      closeModal();
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      renderTable();
+    });
+  </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
