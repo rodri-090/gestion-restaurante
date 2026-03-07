@@ -200,7 +200,7 @@
       }
     }
 
-    // 🎨 Renderizar reservas desde la API
+    //  Renderizar reservas desde la API
     async function renderReservas() {
       const lista = document.getElementById('listaReservas');
       const totalSpan = document.getElementById('totalReservas');
@@ -244,7 +244,7 @@
       }
     }
 
-    // ➕ Crear nueva reserva (envía a la API)
+    //  Crear nueva reserva (envía a la API)
     async function crearReserva() {
       const fecha = document.getElementById('fechaReserva').value;
       const hora = document.getElementById('horaReserva').value;
@@ -254,7 +254,7 @@
       const telefono = document.getElementById('telefonoReserva').value.trim();
       
       if (!fecha || !hora || !idMesa || !cliente || !telefono) {
-        alert('⚠️ Completa todos los campos');
+        alert('Completa todos los campos');
         return;
       }
       
@@ -289,7 +289,7 @@
           await cargarMesas();
           await renderReservas();
         } else {
-          alert('⚠️ ' + (data.mensaje || 'Error al crear reserva'));
+          alert(' ' + (data.mensaje || 'Error al crear reserva'));
         }
       } catch (error) {
         console.error('Error:', error);
@@ -329,12 +329,12 @@
       document.getElementById('modalReserva').style.display = 'block';
     }
 
-    // 🚪 Cerrar modal
+    //  Cerrar modal
     function cerrarModal() {
       document.getElementById('modalReserva').style.display = 'none';
     }
 
-    // 🚀 Inicializar
+    //  Inicializar
     document.addEventListener('DOMContentLoaded', async function() {
       // Establecer fecha mínima = hoy
       const fechaInput = document.getElementById('fechaReserva');
