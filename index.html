@@ -113,7 +113,7 @@
             let mensaje = "❌ Usuario o contraseña incorrectos\n\n";
             mensaje += "Usuarios disponibles:\n";
             USUARIOS_PERMITIDOS.forEach(u => {
-              mensaje += `\n📧 ${u.correo}\n ${u.password}\n👤 ${u.nombre}\n`;
+              mensaje += `\n📧 ${u.correo}\n🔑 ${u.password}\n👤 ${u.nombre}\n`;
             });
             alert(mensaje);
           }
@@ -137,7 +137,7 @@
           }
           
           // Paso 2: Pedir contraseña
-          const passwordInput = prompt("Ingresa tu contraseña:");
+          const passwordInput = prompt("🔐 Ingresa tu contraseña:");
           if (!passwordInput) return;
           
           // Validar contraseña
