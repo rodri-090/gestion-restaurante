@@ -150,13 +150,13 @@
     // 🔗 URL del backend
     const API_URL = 'http://localhost:3000/api';
 
-    // 📅 Obtener fecha actual en formato YYYY-MM-DD
+    // Obtener fecha actual en formato YYYY-MM-DD
     function getFechaHoy() {
       const hoy = new Date();
       return hoy.toISOString().split('T')[0];
     }
 
-    // 🪑 Cargar mesas desde la API
+    //  Cargar mesas desde la API
     async function cargarMesas() {
       const select = document.getElementById('mesaReserva');
       const info = document.getElementById('mesaInfo');
@@ -321,7 +321,7 @@
       }
     }
 
-    // 🪟 Mostrar modal
+    //  Mostrar modal
     function mostrarModal(titulo, detalle) {
       document.getElementById('modalReservaTitle').textContent = titulo;
       document.getElementById('modalMensaje').textContent = titulo.includes('✅') ? 'Listo' : 'Atención';
