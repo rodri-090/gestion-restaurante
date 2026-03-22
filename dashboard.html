@@ -111,9 +111,36 @@
               <small style="color:#6b7280;">Próximamente</small>
             </div>
           </a>
+          <a href="categorias.html" style="text-decoration:none; background:#f3f4f6; padding:16px; border-radius:8px; display:flex; align-items:center; gap:12px; transition:all 0.2s;">
+  <i class="bi bi-grid" style="font-size:24px; color:#f97316;"></i>
+  <div>
+    <strong style="display:block; color:#1f2937;">Categorías</strong>
+    <small style="color:#6b7280;">Ver categorías</small>
+  </div>
+</a>
+
+<a href="menu.html" style="text-decoration:none; background:#f3f4f6; padding:16px; border-radius:8px; display:flex; align-items:center; gap:12px; transition:all 0.2s;">
+  <i class="bi bi-journal-text" style="font-size:24px; color:#b45309;"></i>
+  <div>
+    <strong style="display:block; color:#1f2937;">Menú</strong>
+    <small style="color:#6b7280;">Gestionar menú</small>
+  </div>
+</a>
         </div>
       </article>
     </section>
+    <section class="dash-panels" style="margin-top:20px;">
+  <article class="panel" style="background:white; border-radius:12px; padding:20px;">
+    <div class="panel-head" style="margin-bottom:16px;">
+      <h2>Sugerencia del chef</h2>
+      <span class="pill"><i class="bi bi-stars"></i> API externa</span>
+    </div>
+
+    <div id="apiMealContainer" style="display:flex; justify-content:center; align-items:center; min-height:220px; background:#f9fafb; border-radius:12px; padding:20px;">
+      <p style="margin:0; color:#6b7280;">Cargando sugerencia...</p>
+    </div>
+  </article>
+</section>
   </div>
 
   <script>
@@ -175,6 +202,42 @@
         document.getElementById('userWelcome').textContent = `👤 ${userEmail}`;
       }
     }
+
+    async function cargarSugerenciaChef() {
+    const contenedor = document.getElementById('apiMealContainer');
+    if (!contenedor) return;
+
+    try {
+      const respuesta = await fetch('https://www.themealdb.com/api/json/v1/1/random.php');
+      const datos = await respuesta.json();
+      const plato = datos.meals[0];
+
+      contenedor.innerHTML = `
+        <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap; width:100%;">
+          <img 
+            src="${plato.strMealThumb}" 
+            alt="${plato.strMeal}" 
+            style="width:220px; height:220px; object-fit:cover; border-radius:12px;"
+          >
+          <div style="flex:1; min-width:260px;">
+            <h3 style="margin-top:0; margin-bottom:10px; color:#1f2937;">${plato.strMeal}</h3>
+            <p style="margin:0 0 8px 0; color:#6b7280;"><strong>Categoría:</strong> ${plato.strCategory}</p>
+            <p style="margin:0 0 8px 0; color:#6b7280;"><strong>Origen:</strong> ${plato.strArea}</p>
+            <p style="margin:0; color:#4b5563; line-height:1.6;">
+              ${plato.strInstructions.substring(0, 220)}...
+            </p>
+          </div>
+        </div>
+      `;
+    } catch (error) {
+      contenedor.innerHTML = `
+        <p style="margin:0; color:#dc2626;">
+          No se pudo cargar la sugerencia desde el API.
+        </p>
+      `;
+      console.error('Error al cargar API:', error);
+    }
+  }
 
     // Verificar sesión al cargar
     document.addEventListener('DOMContentLoaded', function() {
