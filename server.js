@@ -2,6 +2,8 @@
 // SERVIDOR BACKEND - Gestión Restaurante
 // ============================================
 
+require('dotenv').config();
+
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
@@ -9,29 +11,29 @@ const bodyParser = require('body-parser');
 
 // Crear aplicación Express
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('.'));
 
-// Configuración de conexión a MySQL
+// Configuración de conexión a MySQL (valores por defecto = típico XAMPP)
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'restaurante_db',
-  port: 3306
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD ?? '',
+  database: process.env.DB_NAME || 'restaurante_db',
+  port: Number(process.env.DB_PORT) || 3306
 });
 
 // Conectar a la base de datos
 db.connect((err) => {
   if (err) {
-    console.error('❌ Error conectando a MySQL:', err.message);
+    console.error('Error conectando a MySQL:', err.message);
     process.exit(1);
   } else {
-    console.log('✅ Conectado a MySQL - restaurante_db');
+    console.log('Conectado a MySQL - restaurante_db');
   }
 });
 
@@ -51,7 +53,9 @@ app.post('/api/login', (req, res) => {
   db.query(query, [correo, password], (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
     if (results.length > 0) {
-      res.json({ success: true, usuario: results[0], mensaje: 'Login exitoso' });
+      const usuario = { ...results[0] };
+      delete usuario.password;
+      res.json({ success: true, usuario, mensaje: 'Login exitoso' });
     } else {
       res.status(401).json({ success: false, mensaje: 'Credenciales incorrectas' });
     }
@@ -178,7 +182,7 @@ app.delete('/api/reservas/:id', (req, res) => {
 app.get('/api/estadisticas', (req, res) => {
   const queries = {
     totalReservas: 'SELECT COUNT(*) as total FROM reservas WHERE DATE(fecha_reserva) = CURDATE() AND estado_reserva = "ACTIVA"',
-    mesasOcupadas: 'SELECT COUNT(*) as total FROM mesas WHERE estado_mesa = "OCUPADA"',
+    mesasOcupadas: 'SELECT COUNT(*) as total FROM mesas WHERE estado_mesa IN ("OCUPADA", "RESERVADA")',
     mesasLibres: 'SELECT COUNT(*) as total FROM mesas WHERE estado_mesa = "LIBRE"',
     totalMesas: 'SELECT COUNT(*) as total FROM mesas WHERE estado_mesa != "ELIMINADA"'
   };
@@ -203,6 +207,7 @@ app.get('/api/estadisticas', (req, res) => {
 // ============================================
 // INICIAR SERVIDOR
 // ============================================
+
 
 app.listen(PORT, () => {
   console.log(` Servidor corriendo en http://localhost:${PORT}`);

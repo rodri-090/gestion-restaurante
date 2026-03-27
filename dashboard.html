@@ -126,19 +126,27 @@
     <small style="color:#6b7280;">Gestionar menú</small>
   </div>
 </a>
+
+<div style="background:#f3f4f6; padding:16px; border-radius:8px; display:flex; align-items:center; justify-content:space-between; gap:14px;">
+  <div style="display:flex; align-items:center; gap:12px;">
+    <i class="bi bi-qr-code-scan" style="font-size:24px; color:#0ea5e9;"></i>
+    <div>
+      <strong style="display:block; color:#1f2937;">Comparte el menú</strong>
+      <small style="color:#6b7280;">Escanea el código QR</small>
+    </div>
+  </div>
+
+  <img
+    src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=http://192.168.0.24:3000/menu.html"
+    alt="QR del menú digital"
+    style="width:90px; height:90px; border-radius:6px; background:white; padding:4px;"
+  />
+</div>
+
         </div>
       </article>
     </section>
-    <section class="dash-panels" style="margin-top:20px;">
-  <article class="panel" style="background:white; border-radius:12px; padding:20px;">
-    <div class="panel-head" style="margin-bottom:16px;">
-      <h2>Sugerencia del chef</h2>
-      <span class="pill"><i class="bi bi-stars"></i> API externa</span>
-    </div>
-
-    <div id="apiMealContainer" style="display:flex; justify-content:center; align-items:center; min-height:220px; background:#f9fafb; border-radius:12px; padding:20px;">
-      <p style="margin:0; color:#6b7280;">Cargando sugerencia...</p>
-    </div>
+    
   </article>
 </section>
   </div>
@@ -169,90 +177,51 @@
     }
 
     // Cargar estadísticas
-    function cargarEstadisticas() {
-      const reservas = getReservas();
-      const mesas = getMesas();
-      const fechaHoy = getFechaHoy();
-      
-      // Reservas de hoy
-      const reservasHoy = reservas.filter(r => r.fecha === fechaHoy);
-      document.getElementById('totalReservasHoy').textContent = reservasHoy.length;
-      
-      // Mesas ocupadas
-      const ocupadas = mesas.filter(m => m.estado === 'occ').length;
-      document.getElementById('mesasOcupadas').textContent = ocupadas;
-      
-      // Mesas libres
-      const libres = mesas.filter(m => m.estado === 'free').length;
-      document.getElementById('mesasLibres').textContent = libres;
-      
-      // Porcentaje de ocupación
-      const totalMesas = mesas.length;
-      const porcentaje = totalMesas > 0 ? Math.round((ocupadas / totalMesas) * 100) : 0;
-      document.getElementById('ocupacionPorcentaje').textContent = porcentaje + '%';
-      
-      // Mostrar nombre del usuario
-      const userName = sessionStorage.getItem('userName');
-      const userEmail = sessionStorage.getItem('userEmail') || sessionStorage.getItem('adminEmail');
-      const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
-      
-      if (userName) {
-        document.getElementById('userWelcome').textContent = `👤 ${userName} (${isAdmin ? 'Admin' : 'Usuario'})`;
-      } else if (userEmail) {
-        document.getElementById('userWelcome').textContent = `👤 ${userEmail}`;
-      }
+   async function cargarEstadisticas() {
+  try {
+    const respuesta = await fetch('/api/estadisticas');
+    const stats = await respuesta.json();
+
+    document.getElementById('totalReservasHoy').textContent = stats.totalReservas || 0;
+    document.getElementById('mesasOcupadas').textContent = stats.mesasOcupadas || 0;
+    document.getElementById('mesasLibres').textContent = stats.mesasLibres || 0;
+    document.getElementById('ocupacionPorcentaje').textContent = (stats.ocupacionPorcentaje || 0) + '%';
+
+    const userName = sessionStorage.getItem('userName');
+    const userEmail = sessionStorage.getItem('userEmail') || sessionStorage.getItem('adminEmail');
+    const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
+
+    if (userName) {
+      document.getElementById('userWelcome').textContent = `${userName} (${isAdmin ? 'Admin' : 'Usuario'})`;
+    } else if (userEmail) {
+      document.getElementById('userWelcome').textContent = `${userEmail}`;
     }
+  } catch (error) {
+    console.error('Error cargando estadísticas:', error);
+  }
+}
 
-    async function cargarSugerenciaChef() {
-    const contenedor = document.getElementById('apiMealContainer');
-    if (!contenedor) return;
+   
+  
+    // Verificar sesión al cargar
+   document.addEventListener('DOMContentLoaded', function() {
+  const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+  const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
 
-    try {
-      const respuesta = await fetch('https://www.themealdb.com/api/json/v1/1/random.php');
-      const datos = await respuesta.json();
-      const plato = datos.meals[0];
-
-      contenedor.innerHTML = `
-        <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap; width:100%;">
-          <img 
-            src="${plato.strMealThumb}" 
-            alt="${plato.strMeal}" 
-            style="width:220px; height:220px; object-fit:cover; border-radius:12px;"
-          >
-          <div style="flex:1; min-width:260px;">
-            <h3 style="margin-top:0; margin-bottom:10px; color:#1f2937;">${plato.strMeal}</h3>
-            <p style="margin:0 0 8px 0; color:#6b7280;"><strong>Categoría:</strong> ${plato.strCategory}</p>
-            <p style="margin:0 0 8px 0; color:#6b7280;"><strong>Origen:</strong> ${plato.strArea}</p>
-            <p style="margin:0; color:#4b5563; line-height:1.6;">
-              ${plato.strInstructions.substring(0, 220)}...
-            </p>
-          </div>
-        </div>
-      `;
-    } catch (error) {
-      contenedor.innerHTML = `
-        <p style="margin:0; color:#dc2626;">
-          No se pudo cargar la sugerencia desde el API.
-        </p>
-      `;
-      console.error('Error al cargar API:', error);
-    }
+  if (!isLoggedIn && !isAdmin) {
+    alert('Acceso denegado: debes iniciar sesión');
+    window.location.href = 'index.html';
+    return;
   }
 
-    // Verificar sesión al cargar
-    document.addEventListener('DOMContentLoaded', function() {
-      const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
-      const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
+  try {
+    cargarEstadisticas();
+  } catch (error) {
+    console.error('Error en estadísticas:', error);
+  }
+});
       
-      // Permitir acceso si es usuario normal O administrador
-      if (!isLoggedIn && !isAdmin) {
-        alert(" Acceso denegado: debes iniciar sesión");
-        window.location.href = 'index.html';
-        return;
-      }
-      
-      cargarEstadisticas();
-    });
+ 
   </script>
 </body>
 </html>

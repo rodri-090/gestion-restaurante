@@ -147,16 +147,21 @@
   </div>
 
   <script>
-    // 🔗 URL del backend
+    // URL del backend
     const API_URL = 'http://localhost:3000/api';
 
-    // 📅 Obtener fecha actual en formato YYYY-MM-DD
+    // Fecha actual en formato YYYY-MM-DD
     function getFechaHoy() {
       const hoy = new Date();
       return hoy.toISOString().split('T')[0];
     }
 
-    // 🪑 Cargar mesas desde la API
+    function normalizarFecha(fecha) {
+    if (!fecha) return '';
+    return new Date(fecha).toISOString().split('T')[0];
+    }
+
+    // Cargar mesas desde la API
     async function cargarMesas() {
       const select = document.getElementById('mesaReserva');
       const info = document.getElementById('mesaInfo');
@@ -192,7 +197,7 @@
         });
         
         if (info) {
-          info.textContent = `🟢 ${disponibles} disponibles | 🔴 ${noDisponibles} ocupadas`;
+          info.textContent = `${disponibles} disponibles | ${noDisponibles} ocupadas`;
         }
       } catch (error) {
         console.error('Error cargando mesas:', error);
@@ -215,7 +220,7 @@
         const reservas = await response.json();
         
         // Filtrar reservas de hoy
-        const reservasHoy = reservas.filter(r => r.fecha_reserva === fechaHoy);
+        const reservasHoy = reservas.filter(r => normalizarFecha(r.fecha_reserva) === fechaHoy);
         
         lista.innerHTML = '';
         
@@ -275,8 +280,8 @@
         const data = await response.json();
         
         if (data.success) {
-          mostrarModal('✅ Reserva creada', 
-            `<strong>${cliente}</strong><br>📅 ${fecha} — 🕐 ${hora}<br>🪑 ${mesaText}<br>📞 ${telefono}`);
+          mostrarModal('Reserva creada', 
+            `<strong>${cliente}</strong><br>${fecha} — ${hora}<br>Mesa: ${mesaText}<br>Tel.: ${telefono}`);
           
           // Limpiar formulario
           document.getElementById('fechaReserva').value = '';
@@ -293,11 +298,11 @@
         }
       } catch (error) {
         console.error('Error:', error);
-        alert('❌ Error de conexión con el servidor');
+        alert('Error de conexión con el servidor');
       }
     }
 
-    // ❌ Cancelar reserva (envía a la API)
+    // Cancelar reserva (envía a la API)
     async function cancelarReserva(id) {
       if (confirm('¿Estás seguro de cancelar esta reserva?')) {
         try {
@@ -310,21 +315,21 @@
           if (data.success) {
             await renderReservas();
             await cargarMesas();
-            alert('✅ Reserva cancelada');
+            alert('Reserva cancelada');
           } else {
-            alert('❌ Error al cancelar');
+            alert('Error al cancelar');
           }
         } catch (error) {
           console.error('Error:', error);
-          alert('❌ Error de conexión con el servidor');
+          alert('Error de conexión con el servidor');
         }
       }
     }
 
-    // 🪟 Mostrar modal
+    // Mostrar modal
     function mostrarModal(titulo, detalle) {
       document.getElementById('modalReservaTitle').textContent = titulo;
-      document.getElementById('modalMensaje').textContent = titulo.includes('✅') ? 'Listo' : 'Atención';
+      document.getElementById('modalMensaje').textContent = titulo.includes('Reserva creada') ? 'Listo' : 'Atención';
       document.getElementById('modalDetalle').innerHTML = detalle;
       document.getElementById('modalReserva').style.display = 'block';
     }

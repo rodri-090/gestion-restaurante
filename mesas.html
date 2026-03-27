@@ -126,10 +126,20 @@
     //  URL del backend
     const API_URL = 'http://localhost:3000/api';
 
-    // 📅 Obtener fecha actual
+    // Fecha actual
     function getFechaHoy() {
       const hoy = new Date();
       return hoy.toISOString().split('T')[0];
+    }
+
+    // El formulario usa free/res/occ; MySQL y el API usan LIBRE/RESERVADA/OCUPADA
+    function estadoFormToDb(v) {
+      const m = { free: 'LIBRE', res: 'RESERVADA', occ: 'OCUPADA' };
+      return m[v] || v;
+    }
+    function estadoDbToForm(v) {
+      const m = { LIBRE: 'free', RESERVADA: 'res', OCUPADA: 'occ' };
+      return m[v] || 'free';
     }
 
     // Renderizar estado
@@ -166,8 +176,8 @@
             <td>${mesa.nombre_mesa}</td>
             <td>${mesa.capacidad} personas</td>
             <td>
-              <small style="color:#888;">📅 ${mesa.fecha_disponibilidad}</small><br>
-              <small style="color:#888;">🕐 ${mesa.hora_disponibilidad}</small>
+              <small style="color:#888;">${mesa.fecha_disponibilidad}</small><br>
+              <small style="color:#888;">${mesa.hora_disponibilidad}</small>
             </td>
             <td>${getEstadoHTML(mesa.estado_mesa)}</td>
             <td class="actions">
@@ -191,7 +201,7 @@
         
       } catch (error) {
         console.error('Error cargando mesas:', error);
-        tbody.innerHTML = '<tr><td colspan="5" style="color:red; text-align:center;">❌ Error al cargar mesas. Verifica que el servidor esté corriendo.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="color:red; text-align:center;">Error al cargar mesas. Verifica que el servidor esté corriendo.</td></tr>';
       }
     }
 
@@ -234,12 +244,12 @@
         document.getElementById('capacidadMesa').value = mesa.capacidad;
         document.getElementById('fechaMesa').value = mesa.fecha_disponibilidad;
         document.getElementById('horaMesa').value = mesa.hora_disponibilidad;
-        document.getElementById('estadoMesa').value = mesa.estado_mesa;
+        document.getElementById('estadoMesa').value = estadoDbToForm(mesa.estado_mesa);
         document.getElementById('modalTitle').textContent = 'Editar mesa';
         
       } catch (error) {
         console.error('Error cargando mesa:', error);
-        alert('❌ Error al cargar los datos de la mesa');
+        alert('Error al cargar los datos de la mesa');
       }
     }
 
@@ -267,7 +277,7 @@
       const estado = document.getElementById('estadoMesa').value;
       
       if (!nombre || !capacidad || !fecha || !hora) {
-        alert(' Completa todos los campos obligatorios');
+        alert('Completa todos los campos obligatorios');
         return;
       }
       
@@ -282,13 +292,13 @@
               capacidad: capacidad,
               fecha_disponibilidad: fecha,
               hora_disponibilidad: hora,
-              estado_mesa: estado
+              estado_mesa: estadoFormToDb(estado)
             })
           });
           
           const data = await response.json();
           if (data.success) {
-            alert('✅ Mesa actualizada');
+            alert('Mesa actualizada');
           }
           
         } else {
@@ -304,18 +314,18 @@
                 capacidad: capacidad,
                 fecha_disponibilidad: fecha,
                 hora_disponibilidad: hora,
-                estado_mesa: estado
+                estado_mesa: estadoFormToDb(estado)
               })
             });
             
             const data = await response.json();
             if (!data.success) {
-              alert(' Error al agregar mesa');
+              alert('Error al agregar mesa');
               return;
             }
           }
           
-          alert(`✅ ${numeroMesas} mesa${numeroMesas > 1 ? 's' : ''} agregada${numeroMesas > 1 ? 's' : ''}`);
+          alert(`${numeroMesas} mesa${numeroMesas > 1 ? 's' : ''} agregada${numeroMesas > 1 ? 's' : ''}`);
         }
         
         closeModal();
@@ -323,7 +333,7 @@
         
       } catch (error) {
         console.error('Error:', error);
-        alert(' Error de conexión con el servidor');
+        alert('Error de conexión con el servidor');
       }
     });
 
@@ -337,14 +347,14 @@
           
           const data = await response.json();
           if (data.success) {
-            alert('✅ Mesa eliminada');
+            alert('Mesa eliminada');
             await renderTable();
           } else {
-            alert(' Error al eliminar');
+            alert('Error al eliminar');
           }
         } catch (error) {
           console.error('Error:', error);
-          alert(' Error de conexión con el servidor');
+          alert('Error de conexión con el servidor');
         }
       }
     }
@@ -377,13 +387,13 @@
         const data = await updateResponse.json();
         if (data.success) {
           const nombres = { 'LIBRE': 'Libre', 'RESERVADA': 'Reservada', 'OCUPADA': 'Ocupada' };
-          alert(`✅ Estado cambiado a: ${nombres[nuevoEstado]}`);
+          alert(`Estado cambiado a: ${nombres[nuevoEstado]}`);
           await renderTable();
         }
         
       } catch (error) {
         console.error('Error:', error);
-        alert(' Error de conexión con el servidor');
+        alert('Error de conexión con el servidor');
       }
     }
 

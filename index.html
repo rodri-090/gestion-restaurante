@@ -43,12 +43,9 @@
         </div>
 
         <button class="btn" type="button" id="btnLogin">Entrar</button>
-
-        <div class="divider"></div>
-
-        <button type="button" class="btn btn-outline" id="btnAdmin">
-          Entrar como administrador
-        </button>
+        <p class="subtitle" style="margin-top:12px; font-size:0.85rem; color:#6b7280;">
+          El inicio de sesión usa la tabla <strong>usuarios</strong> en MySQL (correo y contraseña).
+        </p>
       </form>
     </section>
   </main>
@@ -56,18 +53,12 @@
   <script src="js/app.js"></script>
 
   <script>
-    //  Credenciales de administrador
-    const ADMIN_EMAIL = "administrador@restaurante.com";
-    const ADMIN_PASSWORD = "Admin2026!";
-    
-    // Múltiples usuarios permitidos
-    const USUARIOS_PERMITIDOS = [
-      { correo: "usuario@restaurante.com", password: "Usuario2026!", nombre: "Usuario General" },
-      { correo: "juan@restaurante.com", password: "Juan123!", nombre: "Juan Pérez" },
-      { correo: "maria@restaurante.com", password: "Maria456!", nombre: "María García" },
-      { correo: "carlos@restaurante.com", password: "Carlos789!", nombre: "Carlos López" }
-      // Puedes agregar más usuarios aquí
-    ];
+    const API_LOGIN = '/api/login';
+
+    function nombreMostrar(usuario) {
+      const c = (usuario.correo || '').split('@')[0];
+      return c || usuario.correo || 'Usuario';
+    }
 
     //  Mostrar/Ocultar contraseña
     document.getElementById('togglePassword').addEventListener('click', function() {
@@ -86,71 +77,58 @@
     });
 
     document.addEventListener('DOMContentLoaded', function() {
-      
-      // Botón "Entrar" (naranja) - Usuario normal
       const btnLogin = document.getElementById('btnLogin');
       if (btnLogin) {
-        btnLogin.addEventListener('click', function(e) {
+        btnLogin.addEventListener('click', async function(e) {
           e.preventDefault();
-          
-          const usuarioInput = document.getElementById('usuarioInput').value.trim();
-          const passwordInput = document.getElementById('loginPass').value;
-          
-          // Buscar usuario en la lista
-          const usuarioEncontrado = USUARIOS_PERMITIDOS.find(u => 
-            u.correo === usuarioInput && u.password === passwordInput
-          );
-          
-          if (usuarioEncontrado) {
-            // ✅ Login correcto
-            sessionStorage.setItem('isLoggedIn', 'true');
-            sessionStorage.setItem('userEmail', usuarioEncontrado.correo);
-            sessionStorage.setItem('userName', usuarioEncontrado.nombre);
-            alert("✅ Bienvenido, " + usuarioEncontrado.nombre);
-            window.location.href = 'dashboard.html';
-          } else {
-            // ❌ Credenciales incorrectas
-            let mensaje = "❌ Usuario o contraseña incorrectos\n\n";
-            mensaje += "Usuarios disponibles:\n";
-            USUARIOS_PERMITIDOS.forEach(u => {
-              mensaje += `\n📧 ${u.correo}\n🔑 ${u.password}\n👤 ${u.nombre}\n`;
+
+          const correo = document.getElementById('usuarioInput').value.trim();
+          const password = document.getElementById('loginPass').value;
+
+          if (!correo || !password) {
+            alert('Ingresa correo y contraseña.');
+            return;
+          }
+
+          try {
+            const res = await fetch(API_LOGIN, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ correo, password })
             });
-            alert(mensaje);
+
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok || !data.success || !data.usuario) {
+              alert(data.mensaje || 'Credenciales incorrectas o usuario inactivo.');
+              return;
+            }
+
+            const u = data.usuario;
+            const esAdmin = (u.nombre_rol || '') === 'Administrador';
+
+            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('isAdmin');
+            sessionStorage.removeItem('userEmail');
+            sessionStorage.removeItem('userName');
+            sessionStorage.removeItem('adminEmail');
+
+            if (esAdmin) {
+              sessionStorage.setItem('isAdmin', 'true');
+              sessionStorage.setItem('adminEmail', u.correo);
+              sessionStorage.setItem('userName', nombreMostrar(u));
+            } else {
+              sessionStorage.setItem('isLoggedIn', 'true');
+              sessionStorage.setItem('userEmail', u.correo);
+              sessionStorage.setItem('userName', nombreMostrar(u));
+            }
+
+            alert('Bienvenido, ' + nombreMostrar(u));
+            window.location.href = 'dashboard.html';
+          } catch (err) {
+            console.error(err);
+            alert('No se pudo conectar con el servidor. ¿Está corriendo npm start y la base de datos?');
           }
-        });
-      }
-      
-      // Botón "Entrar como administrador"
-      const btnAdmin = document.getElementById('btnAdmin');
-      if (btnAdmin) {
-        btnAdmin.addEventListener('click', function(e) {
-          e.preventDefault();
-          
-          // Paso 1: Pedir correo
-          const emailInput = prompt(" Acceso de Administrador\n\nIngresa tu correo:");
-          if (!emailInput) return;
-          
-          // Validar correo
-          if (emailInput.trim().toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-            alert(" Correo no autorizado\n\nSolo se permite: " + ADMIN_EMAIL);
-            return;
-          }
-          
-          // Paso 2: Pedir contraseña
-          const passwordInput = prompt("🔐 Ingresa tu contraseña:");
-          if (!passwordInput) return;
-          
-          // Validar contraseña
-          if (passwordInput !== ADMIN_PASSWORD) {
-            alert("❌ Contraseña incorrecta");
-            return;
-          }
-          
-          // ✅ Acceso concedido
-          sessionStorage.setItem('isAdmin', 'true');
-          sessionStorage.setItem('adminEmail', emailInput);
-          alert("✅ Bienvenido, Administrador");
-          window.location.href = 'dashboard.html';
         });
       }
     });
