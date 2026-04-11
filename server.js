@@ -24,7 +24,8 @@ const db = mysql.createConnection({
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD ?? '',
   database: process.env.DB_NAME || 'restaurante_db',
-  port: Number(process.env.DB_PORT) || 3306
+  port: Number(process.env.DB_PORT) || 3306,
+  charset: 'utf8mb4'
 });
 
 // Conectar a la base de datos
@@ -187,6 +188,6 @@ app.get('/api/productos', (req, res) => {
 // ============================================
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log('🚀 Servidor corriendo en http://localhost:' + PORT);
-  console.log('📱 Acceso desde red: http://10.155.174.110:' + PORT);
+  console.log(' Servidor corriendo en http://localhost:' + PORT);
+  console.log(' Acceso desde red: http://10.155.174.110:' + PORT);
 });
