@@ -179,9 +179,22 @@
     }
   });
 
+  // ========== INTEGRACIÓN WHATSAPP PARA PEDIDOS ==========
+  const NUMEROS_WHATSAPP_PEDIDOS = [
+    '50372673651',
+    '50376542587',
+    '50377258181'
+  ];
+
   function pedirProducto(nombre, precio) {
-    alert('✅ Producto agregado:\n\n' + nombre + '\nPrecio: $' + precio + '\n\n(Próximamente: carrito de compras)');
+    const numeroElegido = NUMEROS_WHATSAPP_PEDIDOS[Math.floor(Math.random() * NUMEROS_WHATSAPP_PEDIDOS.length)];
+    
+    // Mensaje con cara feliz y agradecimiento
+    const mensaje = `Hola, me gustaría hacer un pedido:%0A%0A😊 *Producto:* ${nombre}%0A *Precio:* $${precio}%0A%0A¡Gracias por su compra!`;
+    
+    window.open(`https://wa.me/${numeroElegido}?text=${mensaje}`, '_blank');
   }
+  // ========================================================
   </script>
 </body>
 </html>
