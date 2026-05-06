@@ -10,7 +10,14 @@
     body { background: #f3eee6; font-family: Arial, sans-serif; padding: 20px; }
     .section-header { background: linear-gradient(90deg, #f59e0b, #f97316); color: white; padding: 15px 20px; border-radius: 10px; margin: 20px 0; }
     .section-header h2 { margin: 0; font-size: 1.5rem; }
-    .menu-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin: 10px 0; height: 100%; }
+    .page-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .page-top h1 { margin: 0; }
+    .nav-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .nav-actions .btn { border-radius: 10px; font-weight: 700; padding: 10px 16px; }
+    .btn-restaurant { background: linear-gradient(90deg, #f59e0b, #f97316); color: white; border: none; }
+    .btn-restaurant:hover { color: white; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3); }
+    .menu-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin: 10px 0; height: 100%; transition: transform 0.25s ease, box-shadow 0.25s ease; }
+    .menu-card:hover { transform: translateY(-8px); box-shadow: 0 10px 22px rgba(0,0,0,0.18); }
     .menu-card img { width: 100%; height: 200px; object-fit: cover; }
     .menu-body { padding: 15px; }
     .menu-title { font-size: 18px; font-weight: bold; margin: 0 0 10px 0; color: #0f172a; }
@@ -20,28 +27,22 @@
     .carry-box { background: #f8f5ef; padding: 12px; border-radius: 8px; margin-top: 10px; }
     .carry-label { font-weight: bold; color: #92400e; font-size: 12px; margin-bottom: 5px; }
     .carry-text { margin: 0; color: #4b5563; font-size: 14px; }
-    .btn-pedir-menu {
-      background: linear-gradient(90deg, #f59e0b, #f97316);
-      color: white;
-      border: none;
-      padding: 14px 28px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 16px;
-      margin-top: 15px;
-      cursor: pointer;
-      width: 100%;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .btn-pedir-menu:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+    @media (max-width: 520px) {
+      .page-top { align-items: flex-start; }
+      .nav-actions { width: 100%; }
+      .nav-actions .btn { flex: 1 1 auto; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1 class="mb-4">Gestión de menú</h1>
+    <div class="page-top mb-4">
+      <h1>Gestión de menú</h1>
+      <div class="nav-actions">
+        <a href="dashboard.html" class="btn btn-dark">&larr; Atr&aacute;s</a>
+        <a href="categorias.html" class="btn btn-restaurant">Ver categor&iacute;as</a>
+      </div>
+    </div>
     
     <section>
       <div class="section-header">
@@ -165,9 +166,6 @@
                 <div class="carry-label">Lleva</div>
                 <p class="carry-text">${p.descripcion || 'Consulta en el restaurante'}</p>
               </div>
-              <button class="btn-pedir-menu" onclick="pedirProducto('${p.nombre}', ${p.precio})">
-                <i class="bi bi-cart-plus"></i> Pedir Ahora
-              </button>
             </div>
           </div>
         `;
@@ -179,22 +177,6 @@
     }
   });
 
-  // ========== INTEGRACIÓN WHATSAPP PARA PEDIDOS ==========
-  const NUMEROS_WHATSAPP_PEDIDOS = [
-    '50372673651',
-    '50376542587',
-    '50377258181'
-  ];
-
-  function pedirProducto(nombre, precio) {
-    const numeroElegido = NUMEROS_WHATSAPP_PEDIDOS[Math.floor(Math.random() * NUMEROS_WHATSAPP_PEDIDOS.length)];
-    
-    // Mensaje con cara feliz y agradecimiento
-    const mensaje = `Hola, me gustaría hacer un pedido:%0A%0A😊 *Producto:* ${nombre}%0A *Precio:* $${precio}%0A%0A¡Gracias por su compra!`;
-    
-    window.open(`https://wa.me/${numeroElegido}?text=${mensaje}`, '_blank');
-  }
-  // ========================================================
   </script>
 </body>
 </html>

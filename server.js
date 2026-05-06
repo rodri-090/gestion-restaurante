@@ -24,8 +24,7 @@ const db = mysql.createConnection({
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD ?? '',
   database: process.env.DB_NAME || 'restaurante_db',
-  port: Number(process.env.DB_PORT) || 3306,
-  charset: 'utf8mb4'
+  port: Number(process.env.DB_PORT) || 3306
 });
 
 // Conectar a la base de datos
@@ -183,11 +182,68 @@ app.get('/api/productos', (req, res) => {
   });
 });
 
+// REPORTES - VENTAS
+app.get('/api/reportes/ventas', (req, res) => {
+  const queries = {
+    dia: 'SELECT DATE(fecha) as periodo, SUM(total_factura) as total FROM facturas WHERE estado_factura = "SI" GROUP BY DATE(fecha) ORDER BY DATE(fecha) ASC',
+    semana: 'SELECT CONCAT(YEAR(fecha), "-W", LPAD(WEEK(fecha, 1), 2, "0")) as periodo, SUM(total_factura) as total FROM facturas WHERE estado_factura = "SI" GROUP BY YEAR(fecha), WEEK(fecha, 1) ORDER BY YEAR(fecha) ASC, WEEK(fecha, 1) ASC',
+    mes: 'SELECT DATE_FORMAT(fecha, "%Y-%m") as periodo, SUM(total_factura) as total FROM facturas WHERE estado_factura = "SI" GROUP BY DATE_FORMAT(fecha, "%Y-%m") ORDER BY DATE_FORMAT(fecha, "%Y-%m") ASC'
+  };
+
+  const reportes = {
+    dia: [],
+    semana: [],
+    mes: []
+  };
+
+  let completed = 0;
+
+  Object.keys(queries).forEach(key => {
+    db.query(queries[key], (err, results) => {
+      if (err) {
+        console.error('Error en reporte de ventas:', err);
+        return res.status(500).json({ error: err.message });
+      }
+
+      reportes[key] = results.map(row => ({
+        periodo: row.periodo,
+        total: Number(row.total)
+      }));
+
+      completed++;
+      if (completed === Object.keys(queries).length) {
+        res.json(reportes);
+      }
+    });
+  });
+});
+
+// REPORTES - PLATOS MAS VENDIDOS
+app.get('/api/reportes/platos-mas-vendidos', (req, res) => {
+  const query = 'SELECT p.id_producto, p.nombre_producto, SUM(fp.cantidad) as cantidad_vendida, SUM(fp.total_producto) as total_generado FROM facturas_productos fp INNER JOIN productos p ON fp.id_producto = p.id_producto INNER JOIN facturas f ON fp.id_factura = f.id_factura WHERE f.estado_factura = "SI" GROUP BY p.id_producto, p.nombre_producto ORDER BY cantidad_vendida DESC, total_generado DESC';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error en reporte de platos mas vendidos:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    const platos = results.map(row => ({
+      id_producto: row.id_producto,
+      nombre_producto: row.nombre_producto,
+      cantidad_vendida: Number(row.cantidad_vendida),
+      total_generado: Number(row.total_generado)
+    }));
+
+    res.json(platos);
+  });
+});
+
 // ============================================
 // INICIAR SERVIDOR
 // ============================================
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(' Servidor corriendo en http://localhost:' + PORT);
-  console.log(' Acceso desde red: http://10.155.174.110:' + PORT);
+  console.log('🚀 Servidor corriendo en http://localhost:' + PORT);
+  console.log('📱 Acceso desde red: http://10.155.174.110:' + PORT);
 });
